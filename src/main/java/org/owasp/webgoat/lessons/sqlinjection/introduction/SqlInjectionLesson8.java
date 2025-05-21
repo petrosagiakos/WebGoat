@@ -127,7 +127,23 @@ public class SqlInjectionLesson8 implements AssignmentEndpoint {
     table.append("</table>");
     return (table.toString());
   }
+  public static void log(Connection connection, String action) {
+    action = action.replace('\'', '"');
+    Calendar cal = Calendar.getInstance();
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    String time = sdf.format(cal.getTime());
 
+    String logQuery =
+        "INSERT INTO access_log (time, action) VALUES ('" + time + "', '" + action + "')";
+
+    try {
+      Statement statement = connection.createStatement(TYPE_SCROLL_SENSITIVE, CONCUR_UPDATABLE);
+      statement.executeUpdate(logQuery);
+    } catch (SQLException e) {
+      System.err.println(e.getMessage());
+    }
+  }
+}/*
   public static void log(Connection connection, String action) {
   
     Calendar cal = Calendar.getInstance();
@@ -145,3 +161,4 @@ public class SqlInjectionLesson8 implements AssignmentEndpoint {
     }
   }
 }
+*/
